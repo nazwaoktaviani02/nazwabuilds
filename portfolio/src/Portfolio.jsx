@@ -7,6 +7,7 @@ const KADA_PROJECT = {
   description: "A full-stack note-taking app with user auth, premium upgrade system, and Midtrans payment integration. Built to learn real-world API integration, JWT auth, and MongoDB.",
   tech: ["React", "Node.js", "Express", "MongoDB", "Midtrans"],
   github: "https://github.com/nazwaoktaviani02",
+  live: "https://nazwabuilds-kadaapp-frontend.vercel.app/",
   emoji: "📝",
 };
 
@@ -463,11 +464,19 @@ export default function Portfolio() {
                 <div className="card-actions">
                   <a
                     className="btn-card-primary"
+                    href={KADA_PROJECT.live}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    ↗ See It Live
+                  </a>
+                  <a
+                    className="btn-card-ghost"
                     href={KADA_PROJECT.github}
                     target="_blank"
                     rel="noreferrer"
                   >
-                    ↗ GitHub
+                    GitHub
                   </a>
                 </div>
               </div>
