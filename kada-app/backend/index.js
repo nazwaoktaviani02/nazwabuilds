@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from 'cookie-parser'; 
 import paymentRoutes from './routes/payment.js';
+import analisaRoutes from './routes/analisa.js';
 
 // Import your custom middleware instead of passport
 import { verifyToken } from './middleware/auth.js'; 
@@ -38,6 +39,7 @@ mongoose.connect(
 app.use('/auth', authRoutes);
 app.get('/', (req, res) => res.send(' Halooo'));
 app.get('/about', (req, res) => res.send(' About Me'));
+app.use('/analisa', analisaRoutes);
 
 // PROTECTED ROUTE:
 app.use('/notes', verifyToken, notesRoutes);
