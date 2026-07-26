@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    /* =====================================================================
+     GAMPANG DIEDIT: cari CONFIG di bagian <script> paling bawah untuk
+     ganti nama teman, pesan, foto, dan link "dana kaget".
+  ===================================================================== */
+    :root {
+      --cream: #FFF8F0;
+      --cream-2: #FFF1E4;
+      --pink: #FFC9DC;
+      --pink-deep: #F591B2;
+      --lavender: #DDD0FA;
+      --lavender-deep: #B79EEF;
+      --peach: #FFDBB5;
+      --sage: #C7E8CF;
+      --plum: #5B3A5B;
+      --plum-soft: #8B6B8F;
+      --white: #FFFFFF;
+      --shadow: 4px 4px 0px rgba(91, 58, 91, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Quicksand', sans-serif;
+      background:
+        radial-gradient(circle at 15% 20%, var(--pink) 0, transparent 35%),
+        radial-gradient(circle at 85% 10%, var(--lavender) 0, transparent 30%),
+        radial-gradient(circle at 90% 80%, var(--peach) 0, transparent 35%),
+        radial-gradient(circle at 10% 85%, var(--sage) 0, transparent 30%),
+        var(--cream);
+      color: var(--plum);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+    }
+
+    /* ---------- SLIDESHOW SHELL ---------- */
+    .slideshow {
+      position: relative;
+    }
+
+    .slide {
+      display: none;
+      background: var(--white);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      border: 2px solid rgba(91, 58, 91, 0.06);
+      min-height: 520px;
+      padding: 36px 26px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dots-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--lavender);
+      transition: .2s ease;
+    }
+
+    .dot.active {
+      background: var(--pink-deep);
+      width: 22px;
+      border-radius: 6px;
+    }
+
+    .inline-next {
+      font-family: 'Fredoka';
+      font-weight: 500;
+      font-size: 15px;
+      background: var(--pink-deep);
+      color: var(--white);
+      border: none;
+      border-radius: 30px;
+      padding: 11px 30px;
+      cursor: pointer;
+      margin-top: 22px;
+      transition: transform .15s ease, background .2s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .inline-next.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .inline-next:hover {
+      background: #e97ba3;
+    }
+
+    .inline-next:active {
+      transform: scale(.96);
+    }
+
+    /* ---------- SLIDE 1: KADO ---------- */
+    .hero-eyebrow {
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--plum-soft);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    #gift {
+      cursor: pointer;
+      user-select: none;
+      touch-action: manipulation;
+      margin-top: 6px;
+    }
+
+    #gift svg {
+      display: block;
+      filter: drop-shadow(0 8px 14px rgba(91, 58, 91, 0.18));
+      transition: transform .25s ease;
+    }
+
+    #gift:hover svg {
+      transform: translateY(-4px) rotate(-1deg);
+    }
+
+    #gift.opened {
+      pointer-events: none;
+    }
+
+    .lid {
+      transform-origin: 100px 88px;
+      transition: transform .55s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .ribbon-v,
+    .ribbon-h,
+    .bow {
+      transition: opacity .35s ease, transform .5s ease;
+    }
+
+    #gift.opened .lid {
+      transform: translate(-18px, -46px) rotate(-24deg);
+    }
+
+    #gift.opened .bow {
+      opacity: 0;
+      transform: translateY(-40px) scale(.6);
+    }
+
+    .hint {
+      font-size: 14px;
+      color: var(--plum-soft);
+      margin-top: 14px;
+    }
+
+    .hero-msg {
+      max-width: 520px;
+      margin: 22px auto 0;
+      opacity: 0;
+      transform: translateY(14px);
+      height: 0;
+      overflow: hidden;
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .hero-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+      height: auto;
+    }
+
+    .hero-msg h1 {
+      font-size: 32px;
+      color: var(--pink-deep);
+      line-height: 1.25;
+    }
+
+    .hero-msg p {
+      font-size: 16px;
+      color: var(--plum-soft);
+      margin-top: 10px;
+      line-height: 1.7;
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    /* ---------- SLIDE 2: GALERI ---------- */
+    .slide-title {
+      font-size: 24px;
+      color: var(--pink-deep);
+      margin-bottom: 4px;
+    }
+
+    .slide-sub {
+      font-size: 13px;
+      color: var(--plum-soft);
+      margin-bottom: 22px;
+    }
+
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+    }
+
+    .polaroid {
+      background: var(--white);
+      padding: 10px 10px 24px;
+      box-shadow: 0 6px 14px rgba(91, 58, 91, 0.12);
+      width: 140px;
+      text-align: center;
+      border: 1px solid rgba(91, 58, 91, 0.05);
+    }
+
+    .polaroid:nth-child(odd) {
+      transform: rotate(-4deg);
+    }
+
+    .polaroid:nth-child(even) {
+      transform: rotate(3deg);
+    }
+
+    .polaroid:hover {
+      transform: rotate(0deg) scale(1.05);
+      transition: .25s ease;
+    }
+
+    .polaroid .photo{
+    width:100%;
+    aspect-ratio:1/1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    background:#fff;
+}
+
+.polaroid .photo img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+}
+
+    .polaroid .cap{
+    margin-top:10px;
+    font-size:11px;
+    line-height:1.35;
+    color:var(--plum-soft);
+    text-align:center;
+}
+
+    /* ---------- SLIDE 3: UCAPAN HEBOH ---------- */
+    .heboh-slide {
+      background: linear-gradient(135deg, #FFC9DC 0%, #DDD0FA 50%, #FFDBB5 100%);
+      position: relative;
+    }
+
+    .confetti-fall {
+      position: absolute;
+      top: -10%;
+      border-radius: 2px;
+      pointer-events: none;
+      animation: fall linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes fall {
+      from {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      to {
+        transform: translateY(650px) rotate(360deg);
+      }
+    }
+
+    .emoji-float {
+      position: absolute;
+      font-size: 30px;
+      cursor: pointer;
+      animation: bob 3s ease-in-out infinite;
+      transition: transform .25s ease;
+      z-index: 1;
+    }
+
+    .emoji-float:hover {
+      transform: scale(1.5) rotate(15deg);
+    }
+
+    @keyframes bob {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    .heboh-content {
+      position: relative;
+      z-index: 5;
+      background: transparent;
+      padding: 0 6px;
+    }
+
+    .heboh-content h1 {
+      font-size: 42px;
+      color: var(--white);
+      text-shadow: 2px 2px 0 rgba(91, 58, 91, 0.35);
+      line-height: 1.3;
+    }
+
+    .heboh-content p {
+      font-size: 18px;
+      color: #fff;
+      margin-top: 14px;
+      line-height: 1.75;
+      text-shadow: 1px 1px 3px rgba(91, 58, 91, 0.45);
+      max-width: 520px;
+      font-weight: 500;
+    }
+
+    /* ---------- SLIDE 4: QUIZ ---------- */
+    .quiz-stage {
+      width: 100%;
+      max-width: 480px;
+      text-align: left;
+    }
+
+    .quiz-progress {
+      font-size: 12px;
+      color: var(--plum-soft);
+      text-align: center;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .quiz-q-title {
+      font-family: 'Fredoka';
+      font-size: 18px;
+      color: var(--plum);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .q-opt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--cream-2);
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: border-color .15s ease, background .15s ease;
+    }
+
+    .q-opt:hover {
+      border-color: var(--lavender);
+    }
+
+    .q-opt input {
+      accent-color: var(--pink-deep);
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .q-opt.selected {
+      border-color: var(--pink-deep);
+      background: #FFEAF1;
+    }
+
+    .quiz-yakin-btn {
+      display: block;
+      margin: 14px auto 0;
+      font-family: 'Fredoka';
+      font-weight: 500;
+      font-size: 15px;
+      background: var(--pink-deep);
+      color: var(--white);
+      border: none;
+      border-radius: 30px;
+      padding: 11px 34px;
+      cursor: pointer;
+      transition: transform .15s ease, background .2s ease;
+    }
+
+    .quiz-yakin-btn:hover {
+      background: #e97ba3;
+    }
+
+    .quiz-yakin-btn:active {
+      transform: scale(.96);
+    }
+
+    .quiz-feedback {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 14px;
+      min-height: 20px;
+      font-weight: 500;
+    }
+
+    .quiz-feedback.wrong {
+      color: #D85A30;
+    }
+
+    .quiz-feedback.correct {
+      color: #3B6D11;
+    }
+
+    /* ---------- SLIDE 5: QR DANA KAGET ---------- */
+    .qr-box {
+      background: var(--cream-2);
+      border: 3px dashed var(--pink-deep);
+      border-radius: 20px;
+      padding: 22px;
+      display: inline-flex;
+      margin-top: 8px;
+    }
+
+    #qr-canvas-wrap img,
+    #qr-canvas-wrap canvas {
+      display: block;
+      border-radius: 8px;
+    }
+
+    .qr-note {
+      font-size: 13px;
+      color: var(--plum-soft);
+      margin-top: 16px;
+      max-width: 420px;
+    }
+
+    .restart-link {
+      margin-top: 22px;
+      font-size: 13px;
+      color: var(--pink-deep);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* ---------- MUSIC TOGGLE ---------- */
+    .music-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 60;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--pink-deep);
+      color: var(--white);
+      border: none;
+      box-shadow: 0 6px 14px rgba(91, 58, 91, 0.25);
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .music-btn.muted {
+      background: var(--plum-soft);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--plum-soft);
+      margin-top: 40px;
+    }
+
+    @media (max-width:480px) {
+      .hero-msg h1 {
+        font-size: 26px;
+      }
+
+      .heboh-content h1 {
+        font-size: 30px;
+      }
+
+      .heboh-content p {
+        font-size: 15px;
+      }
+
+      .slide {
+        min-height: 480px;
+        padding: 28px 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="wrap">
+
+    <div class="slideshow">
+      <div class="slide-track">
+
+        <!-- SLIDE 1: KADO -->
+        <section class="slide active" id="slide-1">
+          <div class="hero-eyebrow" id="hero-eyebrow">Untuk orang yang bertambah umur hari ini</div>
+          <div id="gift">
+            <svg width="170" height="170" viewBox="0 0 200 200">
+              <rect x="40" y="90" width="120" height="90" rx="8" fill="#F591B2"></rect>
+              <rect x="40" y="90" width="120" height="90" rx="8" fill="url(#dots)"></rect>
+              <defs>
+                <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <circle cx="5" cy="5" r="2.2" fill="#FFC9DC"></circle>
+                </pattern>
+              </defs>
+              <rect class="ribbon-v" x="90" y="90" width="20" height="90" fill="#DDD0FA"></rect>
+              <g class="lid">
+                <rect x="30" y="68" width="140" height="28" rx="10" fill="#B79EEF"></rect>
+                <rect class="ribbon-h" x="90" y="60" width="20" height="36" fill="#DDD0FA"></rect>
+                <g class="bow">
+                  <circle cx="80" cy="60" r="16" fill="#DDD0FA"></circle>
+                  <circle cx="120" cy="60" r="16" fill="#DDD0FA"></circle>
+                  <circle cx="100" cy="58" r="10" fill="#B79EEF"></circle>
+                </g>
+              </g>
+            </svg>
+          </div>
+          <div class="hint" id="gift-hint">tap kadonya buat buka ucapannya ✨</div>
+          <div class="hero-msg" id="hero-msg">
+            <h1 id="hero-title">Barakallah fii umrik bestiew</h1>
+            <p id="hero-sub">Semoga diberi keberkahan umur, lancar urusan dunia dan akhirat, rezeki, jodoh, skripsi, dan
+              lain-lainnya. Selamat tambah tua dan semoga cepet nikah dah yak. Semoga bisa sering-sering ajak main gw
+              juga yeaw 😏</p>
+            <p id="hero-sub">(krna gw bingung mau ngucapin apa lagi jadi baca ini aja ya sklian nyanyi dah)</p>
+            <p id="hero-sub">Hari ini, hari yang kau tunggu
+              Bertambah  satu tahun, usiamu
+              Bahagialah  slalu
+
+              Yang kuberi, bukan jam dan cincin
+              Bukan seikat bunga, atau puisi
+              Juga  kalung hati
+
+              Maaf,  bukannya pelit
+              Atau nggak mau bermodal dikit
+              Yang  ingin aku, beri padamu
+              Do'a s'tulus hati
+
+              Reff:
+              Smoga Tuhan, melindungi kamu
+              Serta  tercapai semua angan dan cita citamu
+              Mudah mudahan diberi umur panjang
+              Sehat selama lamanya</p>
+            <p id="hero-sub">eaa~</p>
+            <button class="inline-next" id="next-1">lanjut →</button>
+          </div>
+        </section>
+
+        <!-- SLIDE 2: GALERI -->
+        <section class="slide" id="slide-2">
+          <h2 class="slide-title">Galeri zaman purba</h2>
+          <div class="slide-sub">top 4 foto zaman purba</div>
+          <div class="gallery" id="gallery"></div>
+          <button class="inline-next show" id="next-2">lanjut →</button>
+        </section>
+
+        <!-- SLIDE 3: UCAPAN HEBOH -->
+        <section class="slide heboh-slide" id="slide-3">
+          <div id="emoji-layer"></div>
+          <div class="heboh-content">
+            <h1 id="heboh-title">Yeay, selamat ulang tahun!! 🎉</h1>
+            <p id="heboh-sub">Semoga tahun ini penuh kejutan seru, rejeki lancar, dan makin banyak alasan buat senyum!
+            </p>
+            <button class="inline-next show" id="next-3" style="background:var(--white); color:var(--pink-deep);">lanjut
+              →</button>
+          </div>
+        </section>
+
+        <!-- SLIDE 4: QUIZ -->
+        <section class="slide" id="slide-4">
+          <h2 class="slide-title">Kuis dulu sebelum lanjut</h2>
+          <div class="slide-sub">Jawab bener biar kejutan berikutnya kebuka</div>
+          <div class="quiz-stage">
+            <div class="quiz-progress" id="quiz-progress">Soal 1 dari 3</div>
+            <div class="quiz-q-title" id="quiz-q-title"></div>
+            <div id="quiz-q-opts"></div>
+            <button class="quiz-yakin-btn" id="quiz-yakin">Yakin??</button>
+            <div class="quiz-feedback" id="quiz-feedback"></div>
+          </div>
+        </section>
+
+        <!-- SLIDE 5: QR DANA KAGET -->
+        <section class="slide" id="slide-5">
+          <h2 class="slide-title">Ssstt, ada kejutan lagi 👀</h2>
+          <div class="slide-sub">Scan buat jajan seblak nihh!</div>
+          <div class="qr-box" id="qr-canvas-wrap"></div>
+          <div class="qr-note" id="qr-note">Isi CONFIG.danaKagetLink di script biar QR ini aktif.</div>
+          <div class="restart-link" id="restart-link">ulang dari awal ↺</div>
+        </section>
+
+      </div>
+
+      <div class="dots-row" id="dots"></div>
+    </div>
+
+    <footer>baru dibuat sama, khusus buat hari spesialmu 🎂</footer>
+  </div>
+
+  <button class="music-btn muted" id="music-btn" title="Nyalakan musik" aria-label="Toggle musik">♪</button>
+  <audio id="bg-audio" loop autoplay playsinline></audio>
+
+  <script>
+    /* =====================================================================
+       CONFIG — edit bagian ini aja buat personalisasi web-nya
+       ===================================================================== */
+    const CONFIG = {
+      photos: [
+        { url: "https://i.ibb.co.com/fzXJrYGZ/foto-1.jpg", emoji: "📸", caption: "zaman suka ngebolang" },
+        { url: "https://i.ibb.co.com/Q7sQkmSS/foto-2.jpg", emoji: "🎉", caption: "ketemu lagi setelah kepisah 3 thn :v" },
+        { url: "https://i.ibb.co.com/QvPFyCBB/foto-3.jpg", emoji: "☕", caption: "kondangan bareng wkwk" },
+        { url: "https://i.ibb.co.com/dssTngMS/foto-4.jpg", emoji: "🌈", caption: "KBR" }
+      ],
+      // isi dengan URL mp3 kalau mau musik latar auto-play (kosongkan kalau tidak).
+      // catatan: sebagian browser tetap blokir autoplay bersuara sebelum ada interaksi user,
+      // kalau itu terjadi tinggal klik tombol musik di pojok kanan bawah.
+      musicUrl: "https://files.catbox.moe/iktufs.mp3",
+      // isi dengan link "dana kaget" kamu, contoh: link DANA/GoPay/OVO "kirim saldo",
+      // link Saweria/Trakteer, atau link Flip. QR di slide terakhir akan encode link ini.
+      danaKagetLink: "https://link.dana.id/danakaget?c=snrehkhhl&r=hWsz3T&orderId=20260726101214511215010300166111989237304"
+    };
+
+    /* ---------- SLIDESHOW ENGINE (tanpa tombol panah, semua maju sendiri) ---------- */
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const dotsWrap = document.getElementById("dots");
+    let current = 0;
+
+    slides.forEach((_, i) => {
+      const d = document.createElement("div");
+      d.className = "dot" + (i === 0 ? " active" : "");
+      dotsWrap.appendChild(d);
+    });
+    const dots = Array.from(dotsWrap.children);
+
+    function goTo(i) {
+      if (i < 0 || i >= slides.length) return;
+      slides[current].classList.remove("active");
+      current = i;
+      slides[current].classList.add("active");
+      dots.forEach((d, idx) => d.classList.toggle("active", idx === current));
+      if (current === 2) spawnHebohExtras();
+    }
+
+    document.getElementById("next-1").addEventListener("click", () => goTo(1));
+    document.getElementById("next-2").addEventListener("click", () => goTo(2));
+    document.getElementById("next-3").addEventListener("click", () => goTo(3));
+    document.getElementById("restart-link").addEventListener("click", () => {
+      document.getElementById("gift").classList.remove("opened");
+      document.getElementById("hero-msg").classList.remove("show");
+      document.getElementById("gift-hint").style.opacity = "1";
+      quizStep = 0;
+      renderQuizStep();
+      goTo(0);
+    });
+
+    /* ---------- SLIDE 1: GIFT UNWRAP + CONFETTI ---------- */
+    const gift = document.getElementById("gift");
+    const heroMsg = document.getElementById("hero-msg");
+    const giftHint = document.getElementById("gift-hint");
+    const nextBtn1 = document.getElementById("next-1");
+
+    function launchConfetti(count) {
+      const canvas = document.getElementById("confetti-canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const colors = ["#F591B2", "#DDD0FA", "#FFDBB5", "#C7E8CF", "#B79EEF"];
+      const pieces = Array.from({ length: count || 120 }, () => ({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * canvas.height * 0.3,
+        r: 4 + Math.random() * 5,
+        c: colors[Math.floor(Math.random() * colors.length)],
+        vy: 2 + Math.random() * 3,
+        vx: -1.5 + Math.random() * 3,
+        rot: Math.random() * 360,
+        vr: -6 + Math.random() * 12
+      }));
+      let frame = 0;
+      function draw() {
+        frame++;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot * Math.PI / 180);
+          ctx.fillStyle = p.c;
+          ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 1.6);
+          ctx.restore();
+        });
+        if (frame < 160) {
+          requestAnimationFrame(draw);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      draw();
+    }
+
+    gift.addEventListener("click", () => {
+      if (gift.classList.contains("opened")) return;
+      gift.classList.add("opened");
+      giftHint.style.opacity = "0";
+      launchConfetti();
+      startMusic();
+      setTimeout(() => {
+        heroMsg.classList.add("show");
+        setTimeout(() => nextBtn1.classList.add("show"), 400);
+      }, 200);
+    });
+
+    /* ---------- SLIDE 2: GALLERY ---------- */
+    function renderGallery() {
+      const gallery = document.getElementById("gallery");
+      const bgs = ["var(--pink)", "var(--lavender)", "var(--peach)", "var(--sage)"];
+      gallery.innerHTML = CONFIG.photos.map((p, i) => {
+        const bg = bgs[i % bgs.length];
+        const inner = p.url
+          ? `
+    <div class="photo">
+      <img src="${p.url}" alt="${p.caption}">
+    </div>
+    `
+          : `
+    <div class="photo" style="background:${bg};">
+      ${p.emoji}
+    </div>
+    `;
+
+        return `
+  <div class="polaroid">
+    ${inner}
+    <div class="cap">${p.caption}</div>
+  </div>
+`;
+      }).join("");
+    }
+    renderGallery();
+
+    /* ---------- SLIDE 3: HEBOH (confetti jatuh + emoji ngambang) ---------- */
+    let hebohSpawned = false;
+    function spawnHebohExtras() {
+      if (hebohSpawned) return;
+      hebohSpawned = true;
+      const slide = document.getElementById("slide-3");
+      const colors = ["#ffffff", "#FFF1E4", "#FFDBB5", "#C7E8CF"];
+      for (let i = 0; i < 26; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti-fall";
+        const size = 6 + Math.random() * 6;
+        piece.style.left = Math.random() * 100 + "%";
+        piece.style.width = size + "px";
+        piece.style.height = (size * 1.6) + "px";
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDuration = (3 + Math.random() * 3) + "s";
+        piece.style.animationDelay = (Math.random() * 3) + "s";
+        slide.appendChild(piece);
+      }
+      const emojis = ["🎉", "🎂", "🥳", "🎈", "🎁", "✨"];
+      const layer = document.getElementById("emoji-layer");
+      const spots = [
+        { left: "6%", top: "10%" }, { left: "85%", top: "8%" }, { left: "10%", top: "75%" },
+        { left: "88%", top: "72%" }, { left: "4%", top: "45%" }, { left: "90%", top: "42%" }
+      ];
+      emojis.forEach((e, i) => {
+        const span = document.createElement("span");
+        span.className = "emoji-float";
+        span.textContent = e;
+        span.style.left = spots[i].left;
+        span.style.top = spots[i].top;
+        span.style.animationDelay = (i * 0.3) + "s";
+        layer.appendChild(span);
+      });
+    }
+
+    /* ---------- SLIDE 4: QUIZ (satu soal per langkah) ---------- */
+    const QUIZ = {
+      q1: {
+        title: "Udah berapa lama kita berteman?",
+        type: "single",
+        options: [
+          { id: "a", label: "Dari orok" },
+          { id: "b", label: "10 tahunan keknya" },
+          { id: "c", label: "Kemarin sore" },
+          { id: "d", label: "Emang kita temen?" }
+        ],
+        correct: ["b"]
+      },
+      q2: {
+        title: "Tempat yang pernah kita pergi bareng? (pilih 3)",
+        type: "multi",
+        options: [
+          { id: "ragunan", label: "Ragunan" },
+          { id: "bogor", label: "Kebun Raya Bogor" },
+          { id: "tata", label: "Rumah Tata" },
+          { id: "tmii", label: "Taman Mini" }
+        ],
+        correct: ["ragunan", "bogor", "tata"]
+      },
+      q3: {
+        title: "Di mana tempat jajan favorit Nazwa?",
+        type: "single",
+        options: [
+          { id: "a", label: "Depan SD" },
+          { id: "b", label: "Depan TK" },
+          { id: "c", label: "LataFood alias rumah Tata" },
+          { id: "d", label: "Depan Paud" }
+        ],
+        correct: ["c"]
+      }
+    };
+    const quizOrder = ["q1", "q2", "q3"];
+    let quizStep = 0;
+
+    function renderQuizStep() {
+      const qKey = quizOrder[quizStep];
+      const q = QUIZ[qKey];
+      document.getElementById("quiz-progress").textContent = `Soal ${quizStep + 1} dari 3`;
+      document.getElementById("quiz-q-title").textContent = q.title;
+      const inputType = q.type === "single" ? "radio" : "checkbox";
+      const opts = document.getElementById("quiz-q-opts");
+      opts.innerHTML = q.options.map(opt => `
+    <label class="q-opt" data-id="${opt.id}">
+      <input type="${inputType}" name="quiz-current" value="${opt.id}">
+      <span>${opt.label}</span>
+    </label>
+  `).join("");
+      opts.querySelectorAll(".q-opt").forEach(optEl => {
+        const input = optEl.querySelector("input");
+        input.addEventListener("change", () => {
+          if (q.type === "single") {
+            opts.querySelectorAll(".q-opt").forEach(o => o.classList.remove("selected"));
+            if (input.checked) optEl.classList.add("selected");
+          } else {
+            optEl.classList.toggle("selected", input.checked);
+          }
+        });
+      });
+      const feedback = document.getElementById("quiz-feedback");
+      feedback.textContent = "";
+      feedback.className = "quiz-feedback";
+    }
+    renderQuizStep();
+
+    function sameSet(a, b) {
+      if (a.length !== b.length) return false;
+      const sa = [...a].sort();
+      const sb = [...b].sort();
+      return sa.every((v, i) => v === sb[i]);
+    }
+
+    document.getElementById("quiz-yakin").addEventListener("click", () => {
+      const qKey = quizOrder[quizStep];
+      const q = QUIZ[qKey];
+      const selected = Array.from(document.querySelectorAll('input[name="quiz-current"]:checked')).map(i => i.value);
+      const feedback = document.getElementById("quiz-feedback");
+
+      if (selected.length === 0) {
+        feedback.textContent = "Pilih dulu jawabannya ya!";
+        feedback.className = "quiz-feedback wrong";
+        return;
+      }
+      const correct = sameSet(selected, q.correct);
+      if (!correct) {
+        feedback.textContent = "Belum tepat nih, coba lagi ya!";
+        feedback.className = "quiz-feedback wrong";
+        return;
+      }
+
+      launchConfetti(70);
+      feedback.className = "quiz-feedback correct";
+
+      if (quizStep === 0) {
+        feedback.textContent = "Wede bener, tapi masih ada 2 lagi!";
+        setTimeout(() => { quizStep = 1; renderQuizStep(); }, 1400);
+      } else if (quizStep === 1) {
+        feedback.textContent = "Wede bener, masih 1 lagi nih!";
+        setTimeout(() => { quizStep = 2; renderQuizStep(); }, 1400);
+      } else {
+        feedback.textContent = "Semua jawaban bener! Silahkan klaim ini buat jajan cilok yaa 🎉";
+        launchConfetti(160);
+        setTimeout(() => goTo(4), 1800);
+      }
+    });
+
+    /* ---------- SLIDE 5: QR DANA KAGET ---------- */
+    function renderQR() {
+      const wrap = document.getElementById("qr-canvas-wrap");
+      const note = document.getElementById("qr-note");
+      if (!CONFIG.danaKagetLink) {
+        wrap.innerHTML = '<div style="width:180px;height:180px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--plum-soft);padding:10px;text-align:center;">QR belum aktif</div>';
+        note.textContent = "Isi CONFIG.danaKagetLink di script (link DANA/GoPay/Saweria/Flip kamu) biar QR ini aktif.";
+        return;
+      }
+      new QRCode(wrap, {
+        text: CONFIG.danaKagetLink,
+        width: 180,
+        height: 180,
+        colorDark: "#5B3A5B",
+        colorLight: "#ffffff"
+      });
+      note.textContent = "Scan pakai kamera HP yeahhh";
+    }
+    renderQR();
+
+    /* ---------- MUSIK: nyala begitu ada interaksi pertama (klik kado) ---------- */
+    const musicBtn = document.getElementById("music-btn");
+    const audio = document.getElementById("bg-audio");
+    let playing = false;
+
+    function startMusic() {
+      if (!CONFIG.musicUrl || playing) return;
+      if (!audio.src) audio.src = CONFIG.musicUrl;
+      audio.play().then(() => {
+        playing = true;
+        musicBtn.classList.remove("muted");
+      }).catch(() => {
+        // masih keblokir browser, biar tombol musik yang jadi jalan manualnya
+        playing = false;
+        musicBtn.classList.add("muted");
+      });
+    }
+    // percobaan pertama pas halaman kebuka (kadang lolos, kadang keblokir tergantung browser)
+    window.addEventListener("load", startMusic);
+
+    musicBtn.addEventListener("click", () => {
+      if (!CONFIG.musicUrl) {
+        musicBtn.title = "Isi CONFIG.musicUrl dulu buat nyalain musik";
+        return;
+      }
+      if (playing) {
+        audio.pause();
+        playing = false;
+        musicBtn.classList.add("muted");
+      } else {
+        startMusic();
+      }
+    });
+  </script>
+</body>
+
+</html>
