@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis Kelayakan Dana Kaget 💜</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #2d1b4e 0%, #4a1f5c 35%, #6b2a6e 65%, #8b2f7d 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-x: hidden;
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 28px;
+    max-width: 480px;
+    width: 100%;
+    padding: 36px 28px;
+    box-shadow: 0 20px 60px rgba(107, 42, 110, 0.5);
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+  }
+
+  .bg-emoji-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 150px; height: 150px;
+    background: radial-gradient(circle, #d999e8, transparent 70%);
+    border-radius: 50%;
+  }
+
+  h1 {
+    color: #5a2470;
+    font-size: 1.4rem;
+    text-align: center;
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #a267b5;
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .progress-bar {
+    background: #ecdcf2;
+    border-radius: 20px;
+    height: 8px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    background: linear-gradient(90deg, #b455c7, #e558a8);
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .question-box {
+    display: none;
+  }
+
+  .question-box.active {
+    display: block;
+    animation: fadeIn 0.35s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-number {
+    color: #c04fb0;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .q-text {
+    color: #3a1a4a;
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+
+  .option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: #f6ecfa;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    color: #4a2258;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .option:hover {
+    background: #eeddf5;
+    border-color: #d29ce0;
+  }
+
+  .option.correct {
+    background: #d9f7e3 !important;
+    border-color: #4caf7d !important;
+    color: #1f6b45;
+  }
+
+  .option.wrong {
+    background: #fbdde3 !important;
+    border-color: #e0607f !important;
+    color: #96233f;
+  }
+
+  .option:disabled {
+    cursor: default;
+  }
+
+  .feedback {
+    text-align: center;
+    font-weight: 600;
+    margin-top: 16px;
+    min-height: 24px;
+    font-size: 0.95rem;
+  }
+
+  .feedback.correct-text { color: #1f6b45; }
+  .feedback.wrong-text { color: #96233f; }
+
+  .next-btn {
+    display: none;
+    width: 100%;
+    margin-top: 18px;
+    background: linear-gradient(90deg, #b455c7, #e558a8);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(180, 85, 199, 0.4);
+  }
+
+  .next-btn.show { display: block; }
+
+  /* Reveal screen */
+  .reveal-box { display: none; text-align: center; }
+  .reveal-box.active { display: block; animation: popIn 0.5s ease; }
+
+  @keyframes popIn {
+    0% { opacity: 0; transform: scale(0.7); }
+    60% { transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .envelope {
+    font-size: 4.5rem;
+    margin-bottom: 8px;
+    animation: bounce 1.4s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .score-text {
+    color: #a267b5;
+    font-size: 0.95rem;
+    margin-bottom: 14px;
+  }
+
+  .amount {
+    font-size: 3rem;
+    font-weight: 900;
+    background: linear-gradient(90deg, #b455c7, #e558a8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 10px 0;
+  }
+
+  .reveal-msg {
+    color: #4a2258;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .claim-note {
+    background: #f6ecfa;
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 0.85rem;
+    color: #7a3d8a;
+  }
+
+  .confetti {
+    position: fixed;
+    top: -20px;
+    font-size: 1.3rem;
+    animation: fall linear forwards;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  @keyframes fall {
+    to { transform: translateY(105vh) rotate(360deg); opacity: 0.3; }
+  }
+
+  .bg-emoji {
+    position: fixed;
+    top: -40px;
+    font-size: 1.4rem;
+    animation: pour linear infinite;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.55;
+  }
+
+  @keyframes pour {
+    to { transform: translateY(110vh) rotate(200deg); }
+  }
+
+  .qr-wrap {
+    margin: 18px auto 4px;
+    background: white;
+    border: 3px solid #e0b8ec;
+    border-radius: 18px;
+    padding: 14px;
+    display: inline-block;
+  }
+
+  .qr-wrap img {
+    width: 180px;
+    height: 180px;
+    display: block;
+  }
+
+  .qr-caption {
+    font-size: 0.8rem;
+    color: #a267b5;
+    margin-bottom: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-emoji-layer" id="bgEmojiLayer"></div>
+
+<div class="card">
+  <div id="quizSection">
+    <h1>Kuis Kelayakan Dana Kaget 💜</h1>
+    <p class="subtitle">khusus buat kuroma kuromi, jawab jujur ya~</p>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div id="questionsContainer"></div>
+  </div>
+
+  <div class="reveal-box" id="revealBox">
+    <div class="envelope">💌</div>
+    <div class="score-text" id="scoreText"></div>
+    <div class="amount">Rp5.000</div>
+    <p class="reveal-msg" id="revealMsg"></p>
+    <div class="qr-wrap">
+      <img src="data:image/png;base64,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" alt="QR Code Dana Kaget">
+    </div>
+    <div class="qr-caption">scan buat langsung claim dana kagetnya 💌</div>
+    <div class="claim-note">buruan diklaim sebelum keburu ilang, met dapet dana kaget kuroma kuromi 💜</div>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    {
+      text: "Siapa nama kucing gw yg remaja 6 bulan?",
+      options: ["Kuromi", "Hello Panda", "Hello Mami", "Oren Belang Bentong"],
+      correct: 3
+    },
+    {
+      text: "Siapa nama pacarnya kuromi?",
+      options: ["Prabowaw", "Ganjarita", "Saripuin", "Purin"],
+      correct: 2
+    },
+    {
+      text: "Siapa nama calonnya kuroma?",
+      options: ["Mas Pique", "Saipudin", "Biasa dipanggil 'Ayang'"],
+      correct: 0
+    },
+    {
+      text: "Pacarnya Kuromu orang mana??",
+      options: ["Orang bumi", "Penguasa Pantai Selatan Bekasi", "Orang Soleh"],
+      correct: 2
+    },
+    {
+      text: "Kapan kita pulan?",
+      options: ["Tenggo tapi liat situasi", "Kapan aja klo mau tinggal tanya our Mother", "Jam set 6"],
+      correct: 0
+    }
+  ];
+
+  let currentQ = 0;
+  let score = 0;
+  const container = document.getElementById('questionsContainer');
+  const progressFill = document.getElementById('progressFill');
+
+  function renderQuestion(index) {
+    container.innerHTML = '';
+    const q = questions[index];
+    const box = document.createElement('div');
+    box.className = 'question-box active';
+
+    box.innerHTML = `
+      <div class="q-number">SOAL ${index + 1} DARI ${questions.length}</div>
+      <div class="q-text">${q.text}</div>
+      <div id="optionsWrap"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="nextBtn">${index === questions.length - 1 ? 'Lihat Hasil →' : 'Lanjut →'}</button>
+    `;
+    container.appendChild(box);
+
+    const optionsWrap = box.querySelector('#optionsWrap');
+    q.options.forEach((optText, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option';
+      btn.textContent = optText;
+      btn.onclick = () => selectAnswer(i, q, box);
+      optionsWrap.appendChild(btn);
+    });
+
+    progressFill.style.width = `${(index / questions.length) * 100}%`;
+  }
+
+  function selectAnswer(selectedIndex, q, box) {
+    const allOptions = box.querySelectorAll('.option');
+    allOptions.forEach(o => o.disabled = true);
+
+    const feedback = box.querySelector('#feedback');
+    const nextBtn = box.querySelector('#nextBtn');
+
+    if (selectedIndex === q.correct) {
+      allOptions[selectedIndex].classList.add('correct');
+      feedback.textContent = 'Bener! Emang kuroma paling apal 💜';
+      feedback.className = 'feedback correct-text';
+      score++;
+    } else {
+      allOptions[selectedIndex].classList.add('wrong');
+      allOptions[q.correct].classList.add('correct');
+      feedback.textContent = 'Yah salah, tapi tetep lanjut kok~';
+      feedback.className = 'feedback wrong-text';
+    }
+
+    nextBtn.classList.add('show');
+    nextBtn.onclick = nextQuestion;
+  }
+
+  function nextQuestion() {
+    currentQ++;
+    if (currentQ < questions.length) {
+      renderQuestion(currentQ);
+    } else {
+      progressFill.style.width = '100%';
+      showReveal();
+    }
+  }
+
+  function showReveal() {
+    document.getElementById('quizSection').style.display = 'none';
+    const revealBox = document.getElementById('revealBox');
+    revealBox.classList.add('active');
+
+    document.getElementById('scoreText').textContent = `Skor kamu: ${score} dari ${questions.length} bener`;
+
+    let msg = '';
+    if (score === questions.length) {
+      msg = 'GILA APAL BANGET, resmi lulus jadi sohib kuroma sejati. Ini dana kagetnya, jangan dijajanin cilok semua ya 💜';
+    } else if (score >= 3) {
+      msg = 'Lumayan apal walau ga sempurna. Tetep dapet dana kagetnya kok, gapapa~';
+    } else {
+      msg = 'Wah kurang deket nih ternyata... tapi dana kagetnya tetep cair, kasian soalnya 😭💜';
+    }
+    document.getElementById('revealMsg').textContent = msg;
+
+    launchConfetti();
+  }
+
+  function launchConfetti() {
+    const emojis = ['💜', '💗', '✨', '🎉', '💌'];
+    for (let i = 0; i < 40; i++) {
+      setTimeout(() => {
+        const conf = document.createElement('div');
+        conf.className = 'confetti';
+        conf.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        conf.style.left = Math.random() * 100 + 'vw';
+        conf.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), 5000);
+      }, i * 60);
+    }
+  }
+
+  // Background pouring emoji animation
+  function startBgEmojiRain() {
+    const emojis = ['💜', '💗', '✨', '🎉', '💌', '⭐', '💖'];
+    const layer = document.getElementById('bgEmojiLayer');
+
+    function spawnEmoji() {
+      const el = document.createElement('div');
+      el.className = 'bg-emoji';
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = Math.random() * 100 + 'vw';
+      const duration = 4 + Math.random() * 4;
+      el.style.animationDuration = duration + 's';
+      el.style.fontSize = (1 + Math.random() * 1.2) + 'rem';
+      layer.appendChild(el);
+      setTimeout(() => el.remove(), duration * 1000);
+    }
+
+    setInterval(spawnEmoji, 350);
+  }
+
+  startBgEmojiRain();
+  renderQuestion(currentQ);
+</script>
+
+</body>
+</html>
