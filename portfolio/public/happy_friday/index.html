@@ -322,6 +322,21 @@
   // musik: coba autoplay pas halaman dibuka
   const bgm = document.getElementById('bgm');
   const soundBtn = document.getElementById('soundBtn');
+  const START_AT = 80; 
+  let seeked = false;
+
+  function seekOnce() {
+    if (seeked) return;
+    seeked = true;
+    bgm.currentTime = START_AT;
+  }
+
+  if (bgm.readyState >= 1) {
+    seekOnce();
+  } else {
+    bgm.addEventListener('loadedmetadata', seekOnce, { once: true });
+  }
+
 
   function syncSoundBtn() {
     soundBtn.textContent = bgm.paused ? '🔇 Backsound' : '🔊 Backsound';
