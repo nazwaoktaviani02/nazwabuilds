@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Happy Friday!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky-top: #1b1a3a;
+    --sky-mid: #3a2e5c;
+    --sky-glow: #ff9a6c;
+    --paper: #fff7ec;
+    --ink: #2b2440;
+    --accent: #ffd166;
+    --accent-soft: rgba(255,209,102,0.35);
+    --found: #7fd9c4;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: var(--sky-top);
+    font-family: 'Manrope', sans-serif;
+    color: var(--paper);
+    overflow: hidden;
+  }
+  .scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at 50% 100%, var(--sky-glow) 0%, var(--sky-mid) 45%, var(--sky-top) 85%);
+    overflow: hidden;
+  }
+  .stars { position: absolute; inset: 0; }
+  .star {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+  @keyframes twinkle { 0%,100% { opacity: 0.2; } 50% { opacity: 0.9; } }
+
+  header {
+    position: absolute;
+    top: max(28px, env(safe-area-inset-top));
+    left: 0; right: 0;
+    text-align: center;
+    padding: 0 20px;
+    z-index: 5;
+  }
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: clamp(22px, 5vw, 34px);
+    margin: 0 0 6px;
+    font-weight: 400;
+  }
+  .sub {
+    font-size: 14px;
+    opacity: 0.75;
+    margin: 0;
+  }
+  .progress {
+    margin-top: 10px;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    opacity: 0.85;
+  }
+
+  .object {
+    position: absolute;
+    font-size: 34px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    filter: drop-shadow(0 0 0 rgba(0,0,0,0)) saturate(0.5) brightness(0.75);
+    opacity: 0.55;
+    transition: transform 0.25s ease, filter 0.25s ease, opacity 0.25s ease;
+    padding: 10px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .object:hover { transform: scale(1.08); opacity: 0.8; }
+  .object.found {
+    filter: saturate(1) brightness(1) drop-shadow(0 0 10px var(--accent-soft));
+    opacity: 1;
+    animation: bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+  .obj-1 { top: 62%; left: 18%; }
+  .obj-2 { top: 30%; left: 74%; }
+  .obj-3 { top: 74%; left: 68%; }
+  .obj-4 { top: 22%; left: 12%; }
+
+  .decoy-1 { top: 48%; left: 48%; font-size: 20px; }
+  .decoy-2 { top: 16%; left: 55%; font-size: 24px; }
+  .decoy-3 { top: 40%; left: 6%; font-size: 22px; }
+  .decoy-4 { top: 58%; left: 88%; font-size: 26px; }
+  .decoy-5 { top: 82%; left: 12%; font-size: 20px; }
+  .decoy-6 { top: 10%; left: 82%; font-size: 22px; }
+  .decoy-7 { top: 78%; left: 45%; font-size: 18px; }
+  .decoy-8 { top: 35%; left: 30%; font-size: 18px; }
+  .decoy-9 { top: 55%; left: 60%; font-size: 22px; }
+  .decoy-10 { top: 68%; left: 25%; font-size: 20px; }
+  .decoy-11 { top: 12%; left: 36%; font-size: 24px; }
+  .decoy-12 { top: 88%; left: 55%; font-size: 20px; }
+  .decoy-13 { top: 25%; left: 92%; font-size: 18px; }
+  .decoy-14 { top: 6%; left: 20%; font-size: 22px; }
+  .decoy-15 { top: 90%; left: 80%; font-size: 20px; }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-4px) rotate(-3deg); }
+    40% { transform: translateX(4px) rotate(3deg); }
+    60% { transform: translateX(-3px) rotate(-2deg); }
+    80% { transform: translateX(3px) rotate(2deg); }
+  }
+  .object.nope { animation: shake 0.4s ease; }
+
+  .hint {
+    position: absolute;
+    bottom: max(24px, env(safe-area-inset-bottom));
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.55;
+    z-index: 5;
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,12,30,0.72);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 20;
+  }
+  .overlay.open { display: flex; }
+  .letter {
+    background: var(--paper);
+    color: var(--ink);
+    max-width: 380px;
+    width: 100%;
+    padding: 32px 28px;
+    border-radius: 4px;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    animation: pop 0.35s cubic-bezier(.2,.9,.3,1.2);
+  }
+  @keyframes pop { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .letter h2 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 22px;
+    margin: 0 0 14px;
+  }
+  .letter p { font-size: 15px; line-height: 1.6; margin: 0; }
+  .close-btn {
+    position: absolute;
+    top: 14px; right: 16px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--ink);
+    opacity: 0.5;
+    cursor: pointer;
+  }
+  .close-btn:focus-visible, .object:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .final {
+    display: none;
+    text-align: center;
+    max-width: 340px;
+  }
+  .final.open { display: block; }
+  .final h2 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 24px; }
+  .final p { font-size: 15px; line-height: 1.6; }
+
+  .sound-btn {
+    position: absolute;
+    top: max(28px, env(safe-area-inset-top));
+    right: 20px;
+    z-index: 6;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: var(--paper);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .object.found, .letter, .star { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene">
+  <div class="stars" id="stars"></div>
+
+  <header>
+    <h1>Hi Myranita, gi apa bes? temenin gabut w yuk</h1>
+    <p class="sub">jadi ada bbrpa hal tersembunyi di layar ini, tapi cuma 4 yang nyimpen pesan yeakk. coba tebak aja ada dmna dan baca pesannya yeahh. Enjoy!.</p>
+    <p class="progress" id="progressText">0 dari 4 ditemukan</p>
+  </header>
+
+  <button class="sound-btn" id="soundBtn">🔇 Backsound</button>
+
+  <button class="object obj-1" data-id="1" data-real="true" aria-label="Objek tersembunyi">☕</button>
+  <button class="object obj-2" data-id="2" data-real="true" aria-label="Objek tersembunyi">🕯️</button>
+  <button class="object obj-3" data-id="3" data-real="true" aria-label="Objek tersembunyi">🌱</button>
+  <button class="object obj-4" data-id="4" data-real="true" aria-label="Objek tersembunyi">🛩️</button>
+
+  <button class="object decoy-1" data-real="false" aria-label="Objek tersembunyi">🌙</button>
+  <button class="object decoy-2" data-real="false" aria-label="Objek tersembunyi">✨</button>
+  <button class="object decoy-3" data-real="false" aria-label="Objek tersembunyi">☁️</button>
+  <button class="object decoy-4" data-real="false" aria-label="Objek tersembunyi">🍃</button>
+  <button class="object decoy-5" data-real="false" aria-label="Objek tersembunyi">🎈</button>
+  <button class="object decoy-6" data-real="false" aria-label="Objek tersembunyi">🔑</button>
+  <button class="object decoy-7" data-real="false" aria-label="Objek tersembunyi">⭐</button>
+  <button class="object decoy-8" data-real="false" aria-label="Objek tersembunyi">🌸</button>
+  <button class="object decoy-9" data-real="false" aria-label="Objek tersembunyi">🍁</button>
+  <button class="object decoy-10" data-real="false" aria-label="Objek tersembunyi">🎧</button>
+  <button class="object decoy-11" data-real="false" aria-label="Objek tersembunyi">📷</button>
+  <button class="object decoy-12" data-real="false" aria-label="Objek tersembunyi">🧡</button>
+  <button class="object decoy-13" data-real="false" aria-label="Objek tersembunyi">🪐</button>
+  <button class="object decoy-14" data-real="false" aria-label="Objek tersembunyi">💫</button>
+  <button class="object decoy-15" data-real="false" aria-label="Objek tersembunyi">🎵</button>
+
+  <p class="hint">Coba geser mata kamu ke sekitar langit ungu ini yeahh</p>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="letter" id="letterBox">
+    <button class="close-btn" id="closeBtn" aria-label="Tutup">✕</button>
+    <div id="letterContent"></div>
+    <div class="final" id="finalContent">
+      <h2>Semua ketemu 🎉</h2>
+      <p>Makasih udah mau nyari satu-satu. Semoga hari Jumat dan weekend kamu menyenangkan, penuh kebahagiaan gess. Happy Friday & Happy Weekend!</p>
+    </div>
+  </div>
+</div>
+
+<!-- Ganti "music.mp3" di bawah ini dengan path/nama file musik kamu -->
+<audio id="bgm" src="music.mp3" loop></audio>
+
+<script>
+  const letters = {
+    1: { title: "Untuk biri-biri kesayangan sarip dan mas piq", body: "Maaciw yeahahhahahahha, udah mau nemenin, kadang gw repotin, temen ngakak bareng dan berbagi hal random bareng wkwkw. Serta membuat weekday ini menjadi lebih menyenangkan." },
+    2: { title: "Hellow", body: "Maaappp bgt yahhh klo kadang w kek panci. kadang suka mood swing kek remaja vintage. Kadang sekedung keding pak dungding dungpak dungking. Anu, langgeng yah sama pasangan klian." },
+    3: { title: "Untuk Myra Kuromi Suka Puasa Hobby Balap Motor Ex barista Tomoro Intern RPX", body: "Myrrr, sering-sering mukbang yuk, trus kita hiking bareng. anyway busway maaciw yeahhh, kmu org yg tulus bgt dan sangat amat ceriaahahahah. kadang mood gw lagi buruk rupa aja bisa sembuh perkara denger asbunan dan cekikikan ente doang whwhwhwhwhw. terus menjadi Myra Kuromi Suka Puasa Hobby Balap Motor Ex barista Tomoro Intern RPX yg ceria dan bersemangat yeahh. sehat selalu dan bahagia selaluw. (nit, pnya mu ada cari dlus yeah)" },
+    4: { title: "Untuk Nita Kuroma Nasi Bakar Lovers Suka Boneka Ulet Pinky Intern RPX", body: "Hii nittttt, pakabar bess. maaciw yeah kyknya mood kmu paling stabil wkwkwk, maaciw sudah menjadi nita yg baik hati tidak sombong dan suka nasi bakar. maaciw yah sudah sering menghibur jugaa. suka bikin ketawa, walau kadang otak w reconnect dlu buat mencerna jokes nya. tetap semangat dan langgeng trus sama mas piq, yeahh. pertahankan dah ntu mas piq. happy dan sehat selalu yaa, klo kmu nikah jangan lupa undang aku yaaaahhhhhhh. dimanapun ituw tolong berkabar HAHAHAHHA. happy friday dan selamt bermalam sabtu dan minggu. (myr, pnya mu ada cari dlus yeah)" }
+  };
+
+  const found = new Set();
+  const overlay = document.getElementById('overlay');
+  const letterContent = document.getElementById('letterContent');
+  const finalContent = document.getElementById('finalContent');
+  const progressText = document.getElementById('progressText');
+  let finalShown = false;
+
+  document.querySelectorAll('.object').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.real === 'false') {
+        btn.classList.remove('nope');
+        void btn.offsetWidth;
+        btn.classList.add('nope');
+        return;
+      }
+      const id = btn.dataset.id;
+      const isNew = !found.has(id);
+      if (isNew) {
+        found.add(id);
+        btn.classList.add('found');
+        progressText.textContent = found.size + ' dari 4 ditemukan';
+      }
+
+      if (isNew && found.size === 4 && !finalShown) {
+        finalShown = true;
+        letterContent.style.display = 'none';
+        finalContent.classList.add('open');
+      } else {
+        finalContent.classList.remove('open');
+        letterContent.style.display = 'block';
+        letterContent.innerHTML = '<h2>' + letters[id].title + '</h2><p>' + letters[id].body + '</p>';
+      }
+      overlay.classList.add('open');
+    });
+  });
+
+  document.getElementById('closeBtn').addEventListener('click', () => {
+    overlay.classList.remove('open');
+  });
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+
+  // bintang random
+  const starsWrap = document.getElementById('stars');
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.top = Math.random() * 70 + '%';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.animationDelay = (Math.random() * 3) + 's';
+    starsWrap.appendChild(s);
+  }
+
+  // musik: coba play/pause, aman kalau file belum ada
+  const bgm = document.getElementById('bgm');
+  const soundBtn = document.getElementById('soundBtn');
+  let playing = false;
+  soundBtn.addEventListener('click', async () => {
+    try {
+      if (!playing) { await bgm.play(); playing = true; soundBtn.textContent = '🔊 Musik'; }
+      else { bgm.pause(); playing = false; soundBtn.textContent = '🔇 Musik'; }
+    } catch (err) {
+      soundBtn.textContent = 'Belum ada musik';
+    }
+  });
+</script>
+
+</body>
+</html>
