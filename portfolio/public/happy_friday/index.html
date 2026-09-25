@@ -319,17 +319,31 @@
     starsWrap.appendChild(s);
   }
 
-  // musik: coba play/pause, aman kalau file belum ada
+  // musik: coba autoplay pas halaman dibuka
   const bgm = document.getElementById('bgm');
   const soundBtn = document.getElementById('soundBtn');
-  let playing = false;
-  soundBtn.addEventListener('click', async () => {
-    try {
-      if (!playing) { await bgm.play(); playing = true; soundBtn.textContent = '🔊 Musik'; }
-      else { bgm.pause(); playing = false; soundBtn.textContent = '🔇 Musik'; }
-    } catch (err) {
-      soundBtn.textContent = 'Belum ada musik';
-    }
+
+  function syncSoundBtn() {
+    soundBtn.textContent = bgm.paused ? '🔇 Backsound' : '🔊 Backsound';
+  }
+
+  bgm.addEventListener('play', syncSoundBtn);
+  bgm.addEventListener('pause', syncSoundBtn);
+
+  // coba play begitu halaman kebuka
+  bgm.play().catch(() => {
+    // kalau diblokir browser, tunggu interaksi pertama (klik objek apa pun termasuk)
+    const tryPlayOnce = () => {
+      bgm.play().catch(() => {});
+      document.removeEventListener('click', tryPlayOnce);
+    };
+    document.addEventListener('click', tryPlayOnce, { once: true });
+  });
+
+  soundBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (bgm.paused) { bgm.play().catch(() => {}); }
+    else { bgm.pause(); }
   });
 </script>
 
